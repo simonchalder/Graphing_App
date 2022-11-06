@@ -177,8 +177,37 @@ def genGraph():
 
         plt.show() 
 
+    elif combobox.get() == "Standard Deviation + Mean":
+
+        sd1 = round(np.std(newFiles.yAxisList1), 2)
+        sd2 = round(np.std(newFiles.yAxisList2), 2)
+        mean1 = sum(yAxisList1) / len(yAxisList1)
+        mean2 = sum(yAxisList2) / len(yAxisList2)
+        sd_mean_str = entryFile1.get() + " SD  = " + str(sd1) + " ***  Mean = " + str(mean1) + "\n " + entryFile2.get() + " SD = " + str(sd2) + " ***  Mean = " + str(mean2)
+
+        if titleEntry.get() == '':
+            plt.title(entryFile1.get() + " vs " + entryFile2.get())
+        else:
+            title = titleEntry.get()
+            plt.title(title)
+
+        plt.grid(True)
+        
+        plt.plot(newFiles.xAxisList1,newFiles.yAxisList1, label = entryFile1.get(), color = "black") # Plot data from file 1 population numbers       
+       
+        plt.plot(newFiles.xAxisList2,newFiles.yAxisList2, label = entryFile2.get(), color = "green") # Plot data from file 2 population numbers       
+        
+        plt.figtext(0.5, 0.03, sd_mean_str, ha="center", va="center", fontsize=14, bbox={"facecolor":"white", "alpha":0.5})
+
+        plt.xlabel(newFiles.xAxisName1) # Axis labels # Axis labels
+        plt.ylabel(newFiles.yAxisName2)
+
+        plt.legend(loc="upper right") # Display graph legend
+
+        plt.show() 
+
 app = customtkinter.CTk()
-app.geometry(f"{1120}x{500}")
+app.geometry(f"{700}x{860}x{0}x{0}")
 app.title("New Graph")
 
 customtkinter.set_appearance_mode("dark")
@@ -186,7 +215,7 @@ customtkinter.set_appearance_mode("dark")
 # Frame 1 ------------------------------------------------------------------------------------------------------
 
 frame1 = customtkinter.CTkFrame(app, width=550, height=100, corner_radius=10)
-frame1.grid(column=0, row=0, padx=20, pady=10)
+frame1.pack(ipadx=40, pady=10)
 
 file1Button = customtkinter.CTkButton(master=frame1, text="Select Files To Compare", command=fileButton1)
 file1Button.grid(column=0, row=0, padx=60, pady=20, sticky="w")
@@ -206,15 +235,15 @@ labelFile2.grid(column=0, row=4, columnspan=2)
 # -------------------------------------------------------------------------------------------------------------
 
 frame2 = customtkinter.CTkFrame(app, width=550, height=100, corner_radius=10)
-frame2.grid(column=0, row=1, padx=20, pady=10)
+frame2.pack(pady=10, ipadx=140)
 
 titleEntry = customtkinter.CTkEntry(master=frame2, placeholder_text="Enter Graph Title")
-titleEntry.pack(padx=40, pady=10, ipadx=140)
+titleEntry.pack(pady=20, ipadx=100)
 
 # ------------------------------------------------------------------------------------------------------------
 
 frame3 = customtkinter.CTkFrame(app, width=550, height=100, corner_radius=10)
-frame3.grid(column=0, row=2, padx=20, pady=10, ipadx=40)
+frame3.pack(pady=10, ipadx=10)
 
 # --------------------------------------------------
 
@@ -222,7 +251,7 @@ plot1XAxisLabel = customtkinter.CTkLabel(master=frame3, text="Plot 1 X")
 plot1XAxisLabel.grid(column=0, row=1)
 
 plot1XAxisBox = customtkinter.CTkEntry(master=frame3, placeholder_text="")
-plot1XAxisBox.grid(column=1, row=1, padx=40, pady=10)
+plot1XAxisBox.grid(column=1, row=1, padx=130, pady=10)
 
 # --------------------------------------------------
 
@@ -230,7 +259,7 @@ plot1YAxisLabel = customtkinter.CTkLabel(master=frame3, text="Plot 1 Y")
 plot1YAxisLabel.grid(column=0, row=2)
 
 plot1YAxisBox = customtkinter.CTkEntry(master=frame3, placeholder_text="")
-plot1YAxisBox.grid(column=1, row=2, padx=40, pady=10)
+plot1YAxisBox.grid(column=1, row=2, padx=160, pady=10)
 
 # --------------------------------------------------
 
@@ -238,7 +267,7 @@ plot2XAxisLabel = customtkinter.CTkLabel(master=frame3, text="Plot 2 X")
 plot2XAxisLabel.grid(column=0, row=3)
 
 plot2XAxisBox = customtkinter.CTkEntry(master=frame3, placeholder_text="")
-plot2XAxisBox.grid(column=1, row=3, padx=40, pady=10)
+plot2XAxisBox.grid(column=1, row=3, padx=160, pady=10)
 
 # --------------------------------------------------
 
@@ -246,27 +275,34 @@ plot2YAxisLabel = customtkinter.CTkLabel(master=frame3, text="Plot 2 Y")
 plot2YAxisLabel.grid(column=0, row=4)
 
 plot2YAxisBox = customtkinter.CTkEntry(master=frame3, placeholder_text="")
-plot2YAxisBox.grid(column=1, row=4, padx=40, pady=10)
+plot2YAxisBox.grid(column=1, row=4, padx=160, pady=10)
 
 # Frame 4 ---------------------------------------------------------------------------------------------
 
 frame4 = customtkinter.CTkFrame(app, width=550, height=100, corner_radius=10)
-frame4.grid(column=1, row=0, padx=20, pady=10, ipadx=40, ipady=25)
+frame4.pack(padx=20, pady=10, ipadx=150, ipady=10)
 
 calcLabel = customtkinter.CTkLabel(master=frame4, text="Select Calculation To Display")
-calcLabel.grid(column=0, row=0, padx=10, pady=20)
+calcLabel.pack(padx=10, pady=20)
 
 combobox = customtkinter.CTkComboBox(master=frame4, values=["None", "Carrying Capacity", "Correlation Coefficient", "Standard Deviation + Mean"], command=None)
-combobox.grid(column=0, row=1, padx=60, pady=10, ipadx=30)
+combobox.pack(padx=60, pady=10, ipadx=30)
 combobox.set("None")  # set initial value
 
 # Frame 5 --------------------------------------------------------------------------------------------
 
 frame5 = customtkinter.CTkFrame(app, width=550, height=100, corner_radius=10)
-frame5.grid(column=1, row=1, padx=20, pady=10, ipady=25)
+frame5.pack(pady=10, ipadx=150)
 
 genGraphButton = customtkinter.CTkButton(master=frame5, text="Generate Graph", command=genGraph)
-genGraphButton.grid(column=0, row=2)
+genGraphButton.pack(padx=50, pady=20, ipadx=40, ipady=40)
+
+# ----------------------------------------------------------------------------------------------------
+frame6 = customtkinter.CTkFrame(app, width=550, height=100, corner_radius=10)
+frame6.pack(pady=10, ipadx=125, ipady=10)
+
+footerLabel = customtkinter.CTkLabel(master=frame6, text="Distributed under the MIT Licence, Copyright Simon Chalder 2022")
+footerLabel.pack()
 
 app.mainloop()
 
