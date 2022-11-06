@@ -2,7 +2,7 @@
  
 ## Purpose
 
-This application is intended to provide a way of comparing statistical data in a graphical manner. It is intended to be used with wildlife and ecological data but can be used to display any data in an appropriate format. 
+This application follows on from my other project (https://github.com/simonchalder/Wildlife-Carrying-Capacity-Calculator) is intended to provide a way of comparing statistical data in a graphical manner. It is intended to be used with wildlife and ecological data but can be used to display any data in an appropriate format. This new version incorporates a more OOP approach and aims to make the code more modular to make updates easier.
 
 ## Usage
 
@@ -21,6 +21,7 @@ No responsibility is taken by the author for the reliability of results. This is
 
 ## TO-DO
 
+- [ ]  Improvements to code modularity and general object orientated principles
 - [ ]  Improvements to error handling and testing
 - [ ]  Test with more real life datasets
 - [ ]  Add more statistical calculations (R-Squared etc)
