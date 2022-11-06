@@ -4,7 +4,7 @@ import itertools
 import tkinter
 from tkinter import filedialog
 import pandas as pd
-import numpy
+import numpy as np
 
 newFiles = None
 filePath1 = None
@@ -41,7 +41,7 @@ class file:
 class calc:
 
     def population_change(pop):
-        pop_change = numpy.diff(pop)
+        pop_change = np.diff(pop)
         pop_change = [float(x) for x in pop_change]
         return pop_change
 
@@ -148,8 +148,34 @@ def genGraph():
 
         plt.show() 
 
-    else:
-        pass
+    elif combobox.get() == "Correlation Coefficient":
+        cor_coef = np.corrcoef(newFiles.yAxisList1, newFiles.yAxisList2, rowvar=False)
+        cor_coef_rounded = round(cor_coef[0,1], 3)
+        cor_coef_str = "Correlation Coefficient = " + str(cor_coef_rounded)
+
+
+        print(round(cor_coef[0,1], 3))
+
+        if titleEntry.get() == '':
+            plt.title(entryFile1.get() + " vs " + entryFile2.get())
+        else:
+            title = titleEntry.get()
+            plt.title(title)
+
+        plt.grid(True)
+        
+        plt.plot(newFiles.xAxisList1,newFiles.yAxisList1, label = entryFile1.get(), color = "black") # Plot data from file 1 population numbers       
+       
+        plt.plot(newFiles.xAxisList2,newFiles.yAxisList2, label = entryFile2.get(), color = "green") # Plot data from file 2 population numbers       
+        
+        plt.figtext(0.5, 0.03, cor_coef_str, ha="center", va="center", fontsize=14, bbox={"facecolor":"white", "alpha":0.5})
+
+        plt.xlabel(newFiles.xAxisName1) # Axis labels # Axis labels
+        plt.ylabel(newFiles.yAxisName2)
+
+        plt.legend(loc="upper right") # Display graph legend
+
+        plt.show() 
 
 app = customtkinter.CTk()
 app.geometry(f"{1120}x{500}")
