@@ -6,23 +6,9 @@ from tkinter import filedialog
 import pandas as pd
 import numpy as np
 
-newFiles = None
-filePath1 = None
-filePath2 = None
-csvFileData1 = None
-csvFileData2 = None
-axisNames1 = None
-xAxisName1 = None
-yAxisName1 = None
-xAxisName2 = None
-yAxisName2 = None
-xAxisList1 = []
-yAxisList1 = []
-xAxisList2 = []
-yAxisList2 = []
+########################### Class Definitions #####################################
 
-
-class file:
+class file: # - Object instances store all data required for current calculations and graphs
 
     def __init__(self, filePath1, filePath2, csvFileData1, csvFileData2, xAxisName1, yAxisName1, xAxisName2, yAxisName2, xAxisList1, yAxisList1, xAxisList2, yAxisList2):
         self.filePath1 = filePath1
@@ -38,46 +24,133 @@ class file:
         self.xAxisList2 = xAxisList2
         self.yAxisList2 = yAxisList2
 
+    def getfilePath1(self): # - Getters and Setters
+        return self.filePath1
+
+    def setfilePath1(self, newValue):
+        self.filePath1 = newValue
+
+    def getfilePath2(self):
+        return self.filePath2
+
+    def setfilePath2(self, newValue):
+        self.filePath2 = newValue
+
+    def getcsvFileData1(self):
+        return self.csvFileData1
+
+    def setcsvFileData1(self, newValue):
+        self.csvFileData1 = newValue
+
+    def getcsvFileData2(self):
+        return self.csvFileData2
+
+    def setcsvFileData2(self, newValue):
+        self.csvFileData2 = newValue
+    
+    def getXAxisName1(self):
+        return self.xAxisName1
+
+    def setXAxisName1(self, newValue):
+        self.xAxisName1 = newValue
+
+    def getYAxisName1(self):
+        return self.yAxisName1
+
+    def setYAxisName1(self, newValue):
+        self.yAxisName1 = newValue
+
+    def getXAxisName2(self):
+        return self.xAxisName2
+
+    def setXAxisName2(self, newValue):
+        self.xAxisName2 = newValue
+
+    def getYAxisName2(self):
+        return self.yAxisName2
+
+    def setYAxisName2(self, newValue):
+        self.yAxisName2 = newValue
+
+    def getXAxisList1(self):
+        return self.xAxisList1
+
+    def setXAxisList1(self, newValue):
+        self.xAxisList1 = newValue
+
+    def getYAxisList1(self):
+        return self.yAxisList1
+
+    def setYAxisList1(self, newValue):
+        self.yAxisList1 = newValue
+
+    def getXAxisList2(self):
+        return self.xAxisList2
+
+    def setXAxisList2(self, newValue):
+        self.xAxisList2 = newValue
+
+    def getYAxisList2(self):
+        return self.yAxisList2
+
+    def setYAxisList2(self, newValue):
+        self.yAxisList2 = newValue  
+
 class calc:
 
-    def population_change(pop):
-        pop_change = np.diff(pop)
+    def population_change(pop): # - Population change calculation for carrying capacity. Takes an array (pop) as an argument
+        pop_change = np.diff(pop) # - numpy method to create a new array containing the difference in values of the pop array
         pop_change = [float(x) for x in pop_change]
         return pop_change
 
-    def growth_rate(pop):
+    def growth_rate(pop): # - Creates an array with values showing the % change from value to value in an array. Takes an array (pop) as an argument
         rate = pd.Series(pop)
         change = rate.pct_change()
         return(round(change[1:], 2).tolist())
 
-    def calc_car_cap(r,N,cp):
-        # K = (r * N * (1-N) / cp)
+    def calc_car_cap(r,N,cp): # - Iterates through the pop array and using arrays from the growth rate and pop change functions calculates the carrying capacity for every value in the pop array
+        # K = (r * N * (1-N) / cp) - alternative formula found for carrying capacity
         C = []
         for a, b, c in itertools.zip_longest(r, N, cp):
             try:
                 K = round((a * b * (1 - b) / c) * -1, 2)
                 # K = b / 1 - (c / a * b) * -1
                 C.append(K)
-            except ZeroDivisionError:           
+            except ZeroDivisionError: # - In the case of a zero division error (no change from value to value), the last carrying capacity value is used           
                 K = C[-1]
                 C.append(K)
-        return(C)
-        
+        return(C) # - Returns an array of carrying capacity values
 
-def makeNewFilesObject(file1, file2, csv1, csv2, x1, y1, x2, y2, xl1, yl1, xl2, yl2):
+    def correlation_coefficient(ylist1, ylist2): # - Correlation coefficient calculation function using numpy method
+        cor_coef = np.corrcoef(ylist1, ylist2, rowvar=False)
+        cor_coef_rounded = round(cor_coef[0,1], 3)
+        cor_coef_str = "Correlation Coefficient = " + str(cor_coef_rounded)
+        return cor_coef, cor_coef_rounded, cor_coef_str # Returns the coefficient, a rounded version (2 decimal places) and a concatinated string for display in the graph
+
+    def sd_mean(ylist1, ylist2): # - Function to calculate mean and sd values in an array
+        sd1 = round(np.std(ylist1), 2)
+        sd2 = round(np.std(ylist2), 2)
+        mean1 = round(sum(ylist1) / len(ylist1), 2)
+        mean2 = round(sum(ylist2) / len(ylist2), 2)
+        sd_mean_str = entryFile1.get() + " SD  = " + str(sd1) + " ***  Mean = " + str(mean1) + "\n " + entryFile2.get() + " SD = " + str(sd2) + " ***  Mean = " + str(mean2)
+        return sd1, sd2, mean1, mean2, sd_mean_str # - Returns sd and mean values for each axis as well as a concatinated string to display in a graph
+
+########################### Function Definitions #####################################
+
+def makeNewFilesObject(file1, file2, csv1, csv2, x1, y1, x2, y2, xl1, yl1, xl2, yl2): # - Creates a new object from the file class
     newFiles = file(file1, file2, csv1, csv2, x1, y1, x2, y2, xl1, yl1, xl2, yl2)
     return newFiles
 
-def printCheck():
-    print(newFiles.xAxisName1)
+def printCheck(): # - Used in debug
+    print(newFiles.getXAxisName1())
 
-def fileButton1():
+def fileButton1(): # - Function called when file selection gui button is pressed
     global newFiles, filePath1, filePath2, csvFileData1, xAxisName1, yAxisName1, xAxisList1, yAxisList1, csvFileData2, xAxisName2, yAxisName2, xAxisList2, yAxisList2
     filePath1 = filedialog.askopenfilename(initialdir = "C:\\", title = "Select File 1", filetypes = (("CSV Files", "*.csv*"), ("all files", "*.*")))   
     csvFileData1 = pd.read_csv(filePath1)
     axisNames1 = csvFileData1.columns
 
-    xAxisName1 = axisNames1[0]
+    xAxisName1 = axisNames1[0] # - File path is read from user input, csv file is read and axis names are generated for both files
     yAxisName1 = axisNames1[1]
 
     xAxisList1 = csvFileData1[xAxisName1]
@@ -102,12 +175,11 @@ def fileButton1():
     plot2XAxisBox.insert(0, newFiles.xAxisName2)
     plot2YAxisBox.insert(0, newFiles.yAxisName2)
 
-cc1 = None
-cc2 = None
-
-def genGraph():
+def genGraph(): # - Calculations and graph generated depending on option selected in GUI combobox by the user
+    
     if combobox.get() == "Carrying Capacity":
-        pop1 = newFiles.yAxisList1
+        
+        pop1 = newFiles.getYAxisList1()
         pc1 = calc.population_change(pop1)
         lastpcval1 = pc1[-1] # get the last value in the list
         pc1.append(lastpcval1)
@@ -116,7 +188,7 @@ def genGraph():
         gr1.append(lastgrval1)
         cc1 = calc.calc_car_cap(gr1, pop1, pc1)
 
-        pop2 = newFiles.yAxisList2
+        pop2 = newFiles.getYAxisList2()
         pc2 = calc.population_change(pop2)
         lastpcval2 = pc2[-1] # get the last value in the list
         pc2.append(lastpcval2)
@@ -125,7 +197,7 @@ def genGraph():
         gr2.append(lastgrval2)
         cc2 = calc.calc_car_cap(gr2, pop2, pc2)
         
-        if titleEntry.get() == '':
+        if titleEntry.get() == '': # Title is auto generated from plot names if no user input is given
             plt.title(entryFile1.get() + " vs " + entryFile2.get())
         else:
             title = titleEntry.get()
@@ -133,28 +205,24 @@ def genGraph():
 
         plt.grid(True)
         
-        plt.plot(newFiles.xAxisList1,newFiles.yAxisList1, label = entryFile1.get(), color = "black") # Plot data from file 1 population numbers       
+        plt.plot(newFiles.getXAxisList1(),newFiles.getYAxisList1(), label = entryFile1.get(), color = "black") # Plot data from file 1 population numbers       
         
-        plt.plot(newFiles.xAxisList1, cc1, label = entryFile1.get() + " Carrying Capacity", color = "blue", linestyle = 'dotted') # Plot carrying capacity data for species 1
+        plt.plot(newFiles.getXAxisList1(), cc1, label = entryFile1.get() + " Carrying Capacity", color = "blue", linestyle = 'dotted') # Plot carrying capacity data for species 1
        
-        plt.plot(newFiles.xAxisList2,newFiles.yAxisList2, label = entryFile2.get(), color = "green") # Plot data from file 2 population numbers       
+        plt.plot(newFiles.getXAxisList2(),newFiles.getYAxisList2(), label = entryFile2.get(), color = "green") # Plot data from file 2 population numbers       
         
-        plt.plot(newFiles.xAxisList2, cc2, label = entryFile2.get() + " Carrying Capacity", color = "red", linestyle = 'dotted') # Plot carrying capacity data for species 1
+        plt.plot(newFiles.getXAxisList2(), cc2, label = entryFile2.get() + " Carrying Capacity", color = "red", linestyle = 'dotted') # Plot carrying capacity data for species 1
         
-        plt.xlabel(newFiles.xAxisName1) # Axis labels # Axis labels
-        plt.ylabel(newFiles.yAxisName2)
+        plt.xlabel(newFiles.getXAxisName1()) # Axis labels # Axis labels
+        plt.ylabel(newFiles.getYAxisName2())
 
         plt.legend(loc="upper right") # Display graph legend
 
         plt.show() 
 
     elif combobox.get() == "Correlation Coefficient":
-        cor_coef = np.corrcoef(newFiles.yAxisList1, newFiles.yAxisList2, rowvar=False)
-        cor_coef_rounded = round(cor_coef[0,1], 3)
-        cor_coef_str = "Correlation Coefficient = " + str(cor_coef_rounded)
-
-
-        print(round(cor_coef[0,1], 3))
+        
+        cor_coef, coef_rounded, coef_str = calc.correlation_coefficient(newFiles.yAxisList1, newFiles.yAxisList2)
 
         if titleEntry.get() == '':
             plt.title(entryFile1.get() + " vs " + entryFile2.get())
@@ -168,7 +236,7 @@ def genGraph():
        
         plt.plot(newFiles.xAxisList2,newFiles.yAxisList2, label = entryFile2.get(), color = "green") # Plot data from file 2 population numbers       
         
-        plt.figtext(0.5, 0.03, cor_coef_str, ha="center", va="center", fontsize=14, bbox={"facecolor":"white", "alpha":0.5})
+        plt.figtext(0.5, 0.03, coef_str, ha="center", va="center", fontsize=14, bbox={"facecolor":"white", "alpha":0.5})
 
         plt.xlabel(newFiles.xAxisName1) # Axis labels # Axis labels
         plt.ylabel(newFiles.yAxisName2)
@@ -179,11 +247,7 @@ def genGraph():
 
     elif combobox.get() == "Standard Deviation + Mean":
 
-        sd1 = round(np.std(newFiles.yAxisList1), 2)
-        sd2 = round(np.std(newFiles.yAxisList2), 2)
-        mean1 = sum(yAxisList1) / len(yAxisList1)
-        mean2 = sum(yAxisList2) / len(yAxisList2)
-        sd_mean_str = entryFile1.get() + " SD  = " + str(sd1) + " ***  Mean = " + str(mean1) + "\n " + entryFile2.get() + " SD = " + str(sd2) + " ***  Mean = " + str(mean2)
+        sd1, sd2, mean1, mean2, sd_mean_str = calc.sd_mean(newFiles.yAxisList1, newFiles.yAxisList2)
 
         if titleEntry.get() == '':
             plt.title(entryFile1.get() + " vs " + entryFile2.get())
@@ -206,9 +270,11 @@ def genGraph():
 
         plt.show() 
 
+########################### Tkinter GUI #####################################
+
 app = customtkinter.CTk()
-app.geometry(f"{700}x{860}x{0}x{0}")
-app.title("New Graph")
+app.geometry(f"{700}x{860}x{0}x{0}") # - GUI dimensions
+app.title("New Graph") # - GUI window title
 
 customtkinter.set_appearance_mode("dark")
 
